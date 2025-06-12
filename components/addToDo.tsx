@@ -9,25 +9,24 @@ import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
 
-export default function AddToDo() {
+export default function AddToDo({ onAdd }: { onAdd: () => void }) {
   const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState<string[]>([]);
-
-  async function saveTasks(newTasks: string[]) {
-    try {
-      await AsyncStorage.setItem("todos", JSON.stringify(newTasks));
-    } catch (err) {
-      console.error("Could not save task", err);
-    }
-  }
 
   async function addTask() {
     if (!task.trim()) return;
 
-    const updated = [...tasks, task];
-    setTasks(updated);
-    setTask("");
-    await saveTasks(updated);
+    try {
+      const stored = await AsyncStorage.getItem("todos");
+      const currentTasks = stored ? JSON.parse(stored) : [];
+
+      const updated = [...currentTasks, task];
+      await AsyncStorage.setItem("todos", JSON.stringify(updated));
+
+      setTask("");
+      onAdd();
+    } catch (err) {
+      console.error("Could not save task", err);
+    }
   }
 
   return (

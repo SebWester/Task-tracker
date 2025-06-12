@@ -1,16 +1,22 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View, StyleSheet } from "react-native";
+import { useState } from "react";
 import AddToDo from "../../components/addToDo";
 import AllTasks from "@/components/allTasks";
 
 export default function Index() {
+  const [refreshFlag, setRefreshFlag] = useState(false);
+
+  function triggerRefresh() {
+    setRefreshFlag((prev) => !prev);
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
       <View style={styles.container}>
         <Text style={styles.text}>Task tracker</Text>
-        <AddToDo />
-
-        <AllTasks />
+        <AddToDo onAdd={triggerRefresh} />
+        <AllTasks refresh={refreshFlag} />
       </View>
     </SafeAreaView>
   );

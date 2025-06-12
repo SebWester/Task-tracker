@@ -11,12 +11,12 @@ import { FontAwesome } from "@expo/vector-icons";
 
 // Get and display all tasks
 
-export default function AllTasks() {
+export default function AllTasks({ refresh }: { refresh: boolean }) {
   const [tasks, setTasks] = useState<string[]>([]);
 
   useEffect(() => {
     loadTasks();
-  }, [tasks]);
+  }, [refresh]);
 
   async function loadTasks() {
     try {
@@ -42,7 +42,6 @@ export default function AllTasks() {
     <View style={styles.container}>
       {tasks.length > 0 ? (
         <>
-          {" "}
           <Text style={styles.title}>Display tasks</Text>
           <FlatList
             data={tasks}
