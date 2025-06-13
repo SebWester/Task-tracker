@@ -39,10 +39,6 @@ export default function AddToDo({ onAdd }: { onAdd: () => void }) {
       />
 
       <TouchableOpacity style={styles.button} onPress={addTask}>
-        {/* <View>
-          <Text style={styles.text}>ADD TASK</Text>
-        </View> */}
-
         <FontAwesome name={"plus"} color={"#01A4F5"} size={20} />
       </TouchableOpacity>
     </View>
@@ -52,17 +48,18 @@ export default function AddToDo({ onAdd }: { onAdd: () => void }) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
+    borderRadius: 12,
+    padding: 6,
+    backgroundColor: "#cccccc",
+    color: "#1a1a1a",
   },
   textField: {
-    borderWidth: 1,
-    borderColor: "darkgray",
     textAlign: "center",
     width: 200,
   },
   button: {
     width: 50,
     height: 35,
-    // backgroundColor: "#01A4F5",
     alignItems: "center",
     alignSelf: "center",
     justifyContent: "center",

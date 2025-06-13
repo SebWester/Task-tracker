@@ -38,26 +38,57 @@ export default function AllTasks({ refresh }: { refresh: boolean }) {
     }
   }
 
+  async function taskDone({ doneTask }: { doneTask: string }) {
+    try {
+      const stored = await AsyncStorage.getItem("done");
+      let doneList = stored ? JSON.parse(stored) : [];
+
+      if (!doneList.includes(doneTask)) {
+        doneList.push(doneTask);
+        await AsyncStorage.setItem("done", JSON.stringify(doneList));
+        removeTask(doneTask);
+      }
+    } catch (err) {
+      console.error("Something went wrong");
+    }
+  }
+
   return (
     <View style={styles.container}>
       {tasks.length > 0 ? (
         <>
-          <Text style={styles.title}>Display tasks</Text>
+          <Text style={styles.title}>Todays tasks</Text>
           <FlatList
+            scrollEnabled={false}
             data={tasks}
             keyExtractor={(index) => index.toString()}
             renderItem={({ item }) => (
               <View style={styles.taskItem}>
-                <Text>{item}</Text>
-                <TouchableOpacity onPress={() => removeTask(item)}>
-                  <FontAwesome name={"close"} color={"black"} size={20} />
+                <Text style={styles.taskText}>{item}</Text>
+
+                {/* Mark task as done */}
+                <TouchableOpacity
+                  style={styles.deleteTask}
+                  onPress={() => taskDone({ doneTask: item })}
+                >
+                  <FontAwesome name={"check"} color={"green"} size={20} />
+                </TouchableOpacity>
+
+                {/* Delete task */}
+                <TouchableOpacity
+                  style={styles.deleteTask}
+                  onPress={() => removeTask(item)}
+                >
+                  <FontAwesome name={"close"} color={"darkred"} size={20} />
                 </TouchableOpacity>
               </View>
             )}
           />
         </>
       ) : (
-        <Text>No tasks to do</Text>
+        <Text style={{ textAlign: "center", fontWeight: 600, fontSize: 16 }}>
+          No tasks to do
+        </Text>
       )}
     </View>
   );
@@ -71,14 +102,24 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 10,
+    textAlign: "center",
   },
   taskItem: {
-    backgroundColor: "#eee",
+    backgroundColor: "#d0e7ff",
     padding: 10,
     marginVertical: 5,
     borderRadius: 5,
     flexDirection: "row",
     width: 200,
     justifyContent: "space-between",
+  },
+  taskText: {
+    flex: 3,
+    flexWrap: "wrap",
+  },
+  deleteTask: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
