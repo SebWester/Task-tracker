@@ -2,12 +2,12 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 
-export default function CompletedTasks() {
+export default function CompletedTasks({ newDone }: { newDone: boolean }) {
   const [markedTasks, setMarkedTasks] = useState<string[]>([]);
 
   useEffect(() => {
     loadCompletedTasks();
-  }, []);
+  }, [newDone]);
 
   async function loadCompletedTasks() {
     try {

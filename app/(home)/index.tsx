@@ -7,9 +7,14 @@ import CompletedTasks from "@/components/completedTasks";
 
 export default function Index() {
   const [refreshFlag, setRefreshFlag] = useState(false);
+  const [completed, setCompleted] = useState(false);
 
   function triggerRefresh() {
     setRefreshFlag((prev) => !prev);
+  }
+
+  function triggerCompleted() {
+    setCompleted((prev) => !prev);
   }
 
   return (
@@ -18,8 +23,8 @@ export default function Index() {
         <ScrollView>
           <Text style={styles.text}>Daily task tracker</Text>
           <AddToDo onAdd={triggerRefresh} />
-          <AllTasks refresh={refreshFlag} />
-          <CompletedTasks />
+          <AllTasks refresh={refreshFlag} onComplete={triggerCompleted} />
+          <CompletedTasks newDone={completed} />
         </ScrollView>
       </View>
     </SafeAreaView>

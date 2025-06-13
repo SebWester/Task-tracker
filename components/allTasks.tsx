@@ -10,8 +10,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
 
 // Get and display all tasks
-
-export default function AllTasks({ refresh }: { refresh: boolean }) {
+export default function AllTasks({
+  refresh,
+  onComplete,
+}: {
+  refresh: boolean;
+  onComplete: () => void;
+}) {
   const [tasks, setTasks] = useState<string[]>([]);
 
   useEffect(() => {
@@ -47,6 +52,7 @@ export default function AllTasks({ refresh }: { refresh: boolean }) {
         doneList.push(doneTask);
         await AsyncStorage.setItem("done", JSON.stringify(doneList));
         removeTask(doneTask);
+        onComplete();
       }
     } catch (err) {
       console.error("Something went wrong");
