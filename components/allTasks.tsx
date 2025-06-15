@@ -9,7 +9,11 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
 
-// Get and display all tasks
+type Task = {
+  text: string;
+  date: string;
+};
+
 export default function AllTasks({
   refresh,
   onComplete,
@@ -17,7 +21,8 @@ export default function AllTasks({
   refresh: boolean;
   onComplete: () => void;
 }) {
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const currentDate = new Date().toLocaleDateString();
 
   useEffect(() => {
     loadTasks();
@@ -26,7 +31,10 @@ export default function AllTasks({
   async function loadTasks() {
     try {
       const stored = await AsyncStorage.getItem("todos");
-      if (stored) setTasks(JSON.parse(stored));
+      if (stored) {
+        const parsed: Task[] = JSON.parse(stored);
+        setTasks(parsed);
+      }
     } catch (err) {
       console.error("Could not get tasks", err);
     }
@@ -34,7 +42,7 @@ export default function AllTasks({
 
   async function removeTask(taskToRemove: string) {
     try {
-      const updatedTasks = tasks.filter((task) => task !== taskToRemove);
+      const updatedTasks = tasks.filter((task) => task.text !== taskToRemove);
       await AsyncStorage.setItem("todos", JSON.stringify(updatedTasks));
       setTasks(updatedTasks);
       console.log("Task deleted");
@@ -42,6 +50,24 @@ export default function AllTasks({
       console.error("Could not delete task", err);
     }
   }
+
+  async function deleteOldDoneTasks() {
+    try {
+      const stored = await AsyncStorage.getItem("doneDate");
+      if (stored && stored !== currentDate) {
+        await AsyncStorage.removeItem("done");
+        await AsyncStorage.setItem("doneDate", currentDate);
+      } else if (!stored) {
+        await AsyncStorage.setItem("doneDate", currentDate);
+      }
+    } catch (err) {
+      console.error("Could not delete old done tasks", err);
+    }
+  }
+
+  useEffect(() => {
+    deleteOldDoneTasks();
+  }, [currentDate]);
 
   async function taskDone({ doneTask }: { doneTask: string }) {
     try {
@@ -59,23 +85,25 @@ export default function AllTasks({
     }
   }
 
+  const todaysTasks = tasks.filter((task) => task.date === currentDate);
+
   return (
     <View style={styles.container}>
-      {tasks.length > 0 ? (
+      {todaysTasks.length > 0 ? (
         <>
-          <Text style={styles.title}>Todays tasks</Text>
+          <Text style={styles.title}>Today's tasks</Text>
           <FlatList
             scrollEnabled={false}
-            data={tasks}
-            keyExtractor={(index) => index.toString()}
+            data={todaysTasks}
+            keyExtractor={(item) => item.text}
             renderItem={({ item }) => (
               <View style={styles.taskItem}>
-                <Text style={styles.taskText}>{item}</Text>
+                <Text style={styles.taskText}>{item.text}</Text>
 
                 {/* Mark task as done */}
                 <TouchableOpacity
                   style={styles.deleteTask}
-                  onPress={() => taskDone({ doneTask: item })}
+                  onPress={() => taskDone({ doneTask: item.text })}
                 >
                   <FontAwesome name={"check"} color={"green"} size={20} />
                 </TouchableOpacity>
@@ -83,7 +111,7 @@ export default function AllTasks({
                 {/* Delete task */}
                 <TouchableOpacity
                   style={styles.deleteTask}
-                  onPress={() => removeTask(item)}
+                  onPress={() => removeTask(item.text)}
                 >
                   <FontAwesome name={"close"} color={"darkred"} size={20} />
                 </TouchableOpacity>
@@ -92,8 +120,8 @@ export default function AllTasks({
           />
         </>
       ) : (
-        <Text style={{ textAlign: "center", fontWeight: 600, fontSize: 16 }}>
-          No tasks to do
+        <Text style={{ textAlign: "center", fontWeight: "600", fontSize: 16 }}>
+          No tasks today
         </Text>
       )}
     </View>

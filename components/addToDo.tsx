@@ -19,7 +19,12 @@ export default function AddToDo({ onAdd }: { onAdd: () => void }) {
       const stored = await AsyncStorage.getItem("todos");
       const currentTasks = stored ? JSON.parse(stored) : [];
 
-      const updated = [...currentTasks, task];
+      const newTask = {
+        text: task,
+        date: new Date().toLocaleDateString(), // t.ex. "2025-06-15"
+      };
+
+      const updated = [...currentTasks, newTask];
       await AsyncStorage.setItem("todos", JSON.stringify(updated));
 
       setTask("");
