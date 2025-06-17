@@ -38,9 +38,9 @@ export default function CompletedTasks({ newDone }: { newDone: boolean }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Completed Tasks</Text>
       {markedTasks.length > 0 ? (
         <>
+          <Text style={styles.title}>Completed Tasks</Text>
           {markedTasks.map((item) => (
             <View key={item} style={styles.taskItem}>
               <Text style={styles.taskText}>{item}</Text>
