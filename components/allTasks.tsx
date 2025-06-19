@@ -97,9 +97,9 @@ export default function AllTasks({
         <>
           <Text style={appTheme.title}>Today's tasks</Text>
           <FlatList
-            style={{ alignContent: "center" }}
+            style={appTheme.list}
             scrollEnabled={false}
-            data={todaysTasks}
+            data={[...todaysTasks].reverse()}
             keyExtractor={(item) => item.text}
             renderItem={({ item }) => (
               <View style={appTheme.taskItem}>
@@ -141,6 +141,9 @@ const lightTheme = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
   },
+  list: {
+    flexDirection: "column-reverse",
+  },
   taskItem: {
     backgroundColor: "#d0e7ff",
     padding: 10,
@@ -175,6 +178,9 @@ const darkTheme = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
     color: "white",
+  },
+  list: {
+    flexDirection: "column-reverse",
   },
   taskItem: {
     backgroundColor: "#d0e7ff",
