@@ -5,6 +5,7 @@ import AddToDo from "../../components/addToDo";
 import AllTasks from "@/components/allTasks";
 import CompletedTasks from "@/components/completedTasks";
 import { useTheme } from "@/context/ThemeContext";
+import { useMode } from "@/context/ColorModeContext";
 
 export default function Index() {
   const [refreshFlag, setRefreshFlag] = useState(false);
@@ -12,7 +13,6 @@ export default function Index() {
   const { theme } = useTheme();
 
   const appTheme = theme === "light" ? lightTheme : darkTheme;
-
   function triggerRefresh() {
     setRefreshFlag((prev) => !prev);
   }

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
 import { useTheme } from "@/context/ThemeContext";
+import { useMode } from "@/context/ColorModeContext";
 
 type Task = {
   text: string;
@@ -25,12 +26,17 @@ export default function AllTasks({
   const [tasks, setTasks] = useState<Task[]>([]);
   const currentDate = new Date().toLocaleDateString();
   const { theme } = useTheme();
+  const { mode } = useMode();
 
   const appTheme = theme === "light" ? lightTheme : darkTheme;
 
   useEffect(() => {
     loadTasks();
   }, [refresh]);
+
+  useEffect(() => {
+    console.log("From allTasks.tsx:", mode);
+  }, [mode]);
 
   async function loadTasks() {
     try {
