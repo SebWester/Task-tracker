@@ -1,9 +1,14 @@
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
+import { useTheme } from "@/context/ThemeContext";
+import { DarkTheme } from "@react-navigation/native";
 
 export default function CompletedTasks({ newDone }: { newDone: boolean }) {
   const [markedTasks, setMarkedTasks] = useState<string[]>([]);
+  const { theme } = useTheme();
+
+  const appTheme = theme === "light" ? lightTheme : darkTheme;
 
   useEffect(() => {
     loadCompletedTasks();
@@ -37,13 +42,13 @@ export default function CompletedTasks({ newDone }: { newDone: boolean }) {
   //   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={appTheme.container}>
       {markedTasks.length > 0 ? (
         <>
-          <Text style={styles.title}>Completed Tasks</Text>
+          <Text style={appTheme.title}>Completed Tasks</Text>
           {markedTasks.map((item) => (
-            <View key={item} style={styles.taskItem}>
-              <Text style={styles.taskText}>{item}</Text>
+            <View key={item} style={appTheme.taskItem}>
+              <Text style={appTheme.taskText}>{item}</Text>
             </View>
           ))}
         </>
@@ -54,7 +59,7 @@ export default function CompletedTasks({ newDone }: { newDone: boolean }) {
   );
 }
 
-const styles = StyleSheet.create({
+const lightTheme = StyleSheet.create({
   container: {
     padding: 20,
   },
@@ -62,6 +67,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     fontStyle: "italic",
+  },
+  taskItem: {
+    backgroundColor: "#c8e6c9",
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 5,
+    flexDirection: "row",
+    width: 200,
+    justifyContent: "space-between",
+  },
+  taskText: {
+    flex: 3,
+    flexWrap: "wrap",
+    textDecorationLine: "line-through",
+  },
+});
+
+const darkTheme = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
+  title: {
+    fontSize: 16,
+    textAlign: "center",
+    fontStyle: "italic",
+    color: "white",
   },
   taskItem: {
     backgroundColor: "#c8e6c9",

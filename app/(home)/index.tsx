@@ -11,7 +11,7 @@ export default function Index() {
   const [completed, setCompleted] = useState(false);
   const { theme } = useTheme();
 
-  const appTheme = theme === "light" ? lightTheme : DarkTheme;
+  const appTheme = theme === "light" ? lightTheme : darkTheme;
 
   function triggerRefresh() {
     setRefreshFlag((prev) => !prev);
@@ -49,7 +49,7 @@ const lightTheme = StyleSheet.create({
   },
 });
 
-const DarkTheme = StyleSheet.create({
+const darkTheme = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",

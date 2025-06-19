@@ -5,12 +5,12 @@ import { useTheme } from "@/context/ThemeContext";
 export default function SettingsScreen() {
   const { theme, toggleTheme } = useTheme();
 
-  const appTheme = theme === "light" ? lightStyles : darkStyles;
+  const appTheme = theme === "light" ? lightTheme : darkTheme;
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
       <View style={appTheme.container}>
-        <Text>Settings</Text>
+        <Text style={appTheme.header}>Settings</Text>
         <TouchableOpacity style={appTheme.themeButton} onPress={toggleTheme}>
           <Text>Change theme</Text>
         </TouchableOpacity>
@@ -19,11 +19,14 @@ export default function SettingsScreen() {
   );
 }
 
-const lightStyles = StyleSheet.create({
+const lightTheme = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+  },
+  header: {
+    fontSize: 25,
+    marginTop: 20,
   },
   themeButton: {
     backgroundColor: "#bbbbbb",
@@ -33,12 +36,16 @@ const lightStyles = StyleSheet.create({
   },
 });
 
-const darkStyles = StyleSheet.create({
+const darkTheme = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#222831",
+  },
+  header: {
+    color: "white",
+    fontSize: 25,
+    marginTop: 20,
   },
   themeButton: {
     backgroundColor: "#bbbbbb",

@@ -8,6 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
+import { useTheme } from "@/context/ThemeContext";
 
 type Task = {
   text: string;
@@ -23,6 +24,9 @@ export default function AllTasks({
 }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const currentDate = new Date().toLocaleDateString();
+  const { theme } = useTheme();
+
+  const appTheme = theme === "light" ? lightTheme : darkTheme;
 
   useEffect(() => {
     loadTasks();
@@ -88,21 +92,22 @@ export default function AllTasks({
   const todaysTasks = tasks.filter((task) => task.date === currentDate);
 
   return (
-    <View style={styles.container}>
+    <View style={appTheme.container}>
       {todaysTasks.length > 0 ? (
         <>
-          <Text style={styles.title}>Today's tasks</Text>
+          <Text style={appTheme.title}>Today's tasks</Text>
           <FlatList
+            style={{ alignContent: "center" }}
             scrollEnabled={false}
             data={todaysTasks}
             keyExtractor={(item) => item.text}
             renderItem={({ item }) => (
-              <View style={styles.taskItem}>
-                <Text style={styles.taskText}>{item.text}</Text>
+              <View style={appTheme.taskItem}>
+                <Text style={appTheme.taskText}>{item.text}</Text>
 
                 {/* Mark task as done */}
                 <TouchableOpacity
-                  style={styles.deleteTask}
+                  style={appTheme.deleteTask}
                   onPress={() => taskDone({ doneTask: item.text })}
                 >
                   <FontAwesome name={"check"} color={"green"} size={20} />
@@ -110,7 +115,7 @@ export default function AllTasks({
 
                 {/* Delete task */}
                 <TouchableOpacity
-                  style={styles.deleteTask}
+                  style={appTheme.deleteTask}
                   onPress={() => removeTask(item.text)}
                 >
                   <FontAwesome name={"close"} color={"darkred"} size={20} />
@@ -120,15 +125,13 @@ export default function AllTasks({
           />
         </>
       ) : (
-        <Text style={{ textAlign: "center", fontWeight: "600", fontSize: 16 }}>
-          No tasks today
-        </Text>
+        <Text style={appTheme.noTasks}>No tasks today</Text>
       )}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const lightTheme = StyleSheet.create({
   container: {
     padding: 20,
   },
@@ -155,5 +158,45 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  noTasks: {
+    textAlign: "center",
+    fontSize: 22,
+  },
+});
+
+const darkTheme = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+    color: "white",
+  },
+  taskItem: {
+    backgroundColor: "#d0e7ff",
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 5,
+    flexDirection: "row",
+    width: 200,
+    justifyContent: "space-between",
+  },
+  taskText: {
+    flex: 3,
+    flexWrap: "wrap",
+  },
+  deleteTask: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noTasks: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 22,
   },
 });
